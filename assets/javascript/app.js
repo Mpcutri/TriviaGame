@@ -135,6 +135,7 @@ var quizQuestions = [
 	  position++;
 	  // then the renderQuestion function runs again to go to next question
 	  renderQuestion();
+	  // hide stuf, set timeout. . then renderQuestion within the setTimeout. add picture to the page before the setTimeout.
 	}
 
 	$("#start-button").on("click", function(){ // as soon as i put this in, i cant cycle through questions.
