@@ -1,3 +1,7 @@
+$(document).ready(function() {
+	$("#submit-question").hide();
+	// $(".quiz").hide();
+
 // Create Variables
 	//position of user in the test
 	//correct for number of questions answered correctly
@@ -18,6 +22,8 @@ var choiceB;
 var choiceC;
 var choiceD;
 var submit = $("#submit");
+var number = 10;
+var intervalId;
 
 
 var quizQuestions = [
@@ -29,8 +35,6 @@ var quizQuestions = [
 	["When you go opened the cellar door, what scared you?", "A Wood Pecker", "Uncle Jim", "A ghost", "the reflection of yourself", "B"]
 ]
 
-// $(document).ready(function() {
-// 	$(".quiz").hide();
 
 // function start() {
 // 	$(".quiz").show();
@@ -45,9 +49,11 @@ var quizQuestions = [
 	function renderQuestion(){
 	  test = getElement("test");
 	  if(position >= quizQuestions.length){
+	  	clearInterval(intervalId);
+	  	$("#show-number").hide();
+	  	$("#submit-question").hide();
 	    test.innerHTML = "<h2>You got "+correct+" of "+quizQuestions.length+" questions correct</h2>";
-	    get("test_status").innerHTML = "Test completed";
-	    $("#show-number").hide(); // ASK TA WHY THE NUMBER ISN"T DISAPPEARING
+	    
 	    // resets the variable to allow users to restart the test
 	    position = 0;
 	    correct = 0;
@@ -67,48 +73,50 @@ var quizQuestions = [
 	  test.innerHTML += "<input class='choices' type='radio' name='choices' value='B'> " + choiceB + "<br>";
 	  test.innerHTML += "<input class='choices' type='radio' name='choices' value='C'> " + choiceC + "<br>";
 	  test.innerHTML += "<input class='choices' type='radio' name='choices' value='D'> " + choiceD + "<br><br>";
-	  test.innerHTML += "<button id='submit' name='submitbutton' onclick='checkAnswer()' onclick='clearInterval(decrement)'>Submit Answer</button>";// onclick='stop()' added
-
-	  	var number = 5;
-
-	    var intervalId;
-
-	    function run() { 
-	      intervalId = setInterval(decrement, 1000); // we're calling this function decrement (below), once every decond.
-	    }
-
-	    function decrement() {
-
-	      number--;
-
-	      $("#show-number").html("<h2>" + (number + " seconds remaining!") + "</h2>");
-
-	      if (number === 1) {
-	      	$("#show-number").html("<h2>" + (number + " second remaining!") + "</h2>");
-	      }
-
-	      if (number === 0) {
-
-	      	stop();
-	        checkAnswer();
-
-	      }
-		  // if (document.getElementByName('submitbutton').clicked == true) { // ASK TA about clearing the countdown on clicking submit.
-		  // 	stop();
-		  // }
-	    }
-
-	    function stop() {
-
-	      clearInterval(intervalId); // this wipes the set interval clear
-	    }
-
-	    run();
+	  // test.innerHTML += "<button id='submit-question' name='submitbutton'>Submit Answer</button>";// onclick='stop()' added
 	}
 
+	$("#submit-question").on("click", function(){
+		console.log(this + " working?");
+		checkAnswer();
+	})
 
+    function run() { 
+      intervalId = setInterval(decrement, 1000); // we're calling this function decrement (below), once every decond.
+      console.log(window);
+    }
+
+    function decrement() {
+
+      number--;
+
+      $("#show-number").html("<h2>" + (number + " seconds remaining!") + "</h2>");
+
+      if (number === 1) {
+      	$("#show-number").html("<h2>" + (number + " second remaining!") + "</h2>");
+      }
+
+      if (number === 0) {
+
+      	stop();
+        checkAnswer();
+
+      }
+	  // if (document.getElementByName('submitbutton').clicked == true) { // ASK TA about clearing the countdown on clicking submit.
+	  // 	stop();
+	  // }
+    }
+
+    function stop() {
+
+      number = 10;
+      // console.log(intervalId);
+      // clearInterval(window.intervalId); // this wipes the set interval clear
+    }
 
 	function checkAnswer(){
+		console.log(checkAnswer + " working?");
+		stop();
 	  // use getElementsByName because we have an array which it will loop through
 	  possibleChoices = document.getElementsByName("choices"); // pulls from lines 55-58
 	  for(var i = 0; i < possibleChoices.length; i++){
@@ -129,7 +137,12 @@ var quizQuestions = [
 	  renderQuestion();
 	}
 
-	window.addEventListener("load", renderQuestion, false);
+	$("#start-button").on("click", function(){ // as soon as i put this in, i cant cycle through questions.
+		$("#start-button").remove();
+		$(".quiz").show();
+		$("#submit-question").show();
+		renderQuestion();
+		run();
+	})
 
-
-// })//end of document.ready function
+})//end of document.ready function
